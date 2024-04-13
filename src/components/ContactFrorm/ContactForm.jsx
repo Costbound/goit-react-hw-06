@@ -2,16 +2,22 @@ import css from './ContactForm.module.css'
 import { useId } from 'react'
 import { ErrorMessage, Formik, Form, Field } from 'formik'
 import * as Yup from 'yup'
+import { addContact } from '../../redux/contactsSlice'
+import { useDispatch } from 'react-redux'
 
 const validation = Yup.object().shape({
     name: Yup.string().min(3, 'Name is too Short!').max(50, 'Name is too long!').required('This field cannot be empty!'),
     number: Yup.string().min(3, 'Number is too Short!').max(50, 'Number is too long!').required('This field cannot be empty!')
 })
 
-export default function ContactForm({ handleSubmit }) {
+export default function ContactForm() {
+    const dispatch = useDispatch()
     const nameID = useId()
     const telID = useId()
-
+    const handleSubmit = (values, actions) => {
+        dispatch(addContact(values))
+        actions.resetForm()
+    }
     return (
         <Formik
             initialValues={{ name: '', number: '' }}
